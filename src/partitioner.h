@@ -113,7 +113,7 @@ class UMonMonitor : public PartitionMonitor {
         void access(uint32_t partition, Address lineAddr);
         uint32_t get(uint32_t partition, uint32_t bucket) const;
         uint32_t getNumAccesses(uint32_t partition) const;
-        void reset();
+        void reset(uint32_t* curAllocs);
 
     private:
         void getMissCurves() const;
@@ -128,6 +128,7 @@ class DIPUMonMonitor : public UMonMonitor {
   public:
       DIPUMonMonitor(uint32_t _numLines, uint32_t _umonLines, uint32_t _umonBuckets, uint32_t _numPartitions, uint32_t _buckets);
       ~DIPUMonMonitor();
+      void reset(uint32_t* curAllocs);
 
   private:
     g_vector<DIPUMon*> monitors;

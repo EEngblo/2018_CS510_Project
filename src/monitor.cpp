@@ -127,11 +127,21 @@ void UMonMonitor::getMissCurve(uint32_t* misses, uint32_t partition) const {
       */
 }
 
-void UMonMonitor::reset() {
+void UMonMonitor::reset(uint32_t* curAllocs) {
     for (auto monitor : monitors) {
         monitor->startNextInterval();
     }
     missCacheValid = false;
+}
+
+void DIPUMonMonitor::reset(uint32_t* curAllocs) { //TODO : argument 받고, given ways도 수정
+  for (auto monitor : monitors) {
+    monitor->startNextInterval();
+  }
+
+  for(int i=0; i < monitors.size(); i++)
+    monitors[i]->setGivenways(curAllocs[i]);
+
 }
 
 

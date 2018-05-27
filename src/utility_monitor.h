@@ -123,6 +123,8 @@ class DIPUMon : public GlobAlloc {
         uint64_t getNumAccesses() const;
         void getMisses(uint64_t* misses);
         void startNextInterval();
+        bool isBIP();
+        void setGivenways(uint32_t _givenways);
 
         uint32_t getBuckets() const { return buckets; }
 };

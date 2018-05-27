@@ -161,5 +161,5 @@ void LookaheadPartitioner::partition() {
 #endif
 
     repl->setPartitionSizes(curAllocs);
-    repl->getMonitor()->reset();
+    repl->getMonitor()->reset(curAllocs);
 }

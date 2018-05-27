@@ -331,6 +331,11 @@ bool DIPUMon::isBIP(){
   return setDueling[givenways-1] < ZERO_POINT;
 }
 
+void DIPUMON::setGivenways(uint32_t _givenways){
+  givenways = _givenways;
+}
+
+
 uint64_t DIPUMon::getNumAccesses() const {
     uint64_t total = mipMisses;
     for (uint32_t i = 0; i < buckets; i++) {
