@@ -197,6 +197,9 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
 
         PartitionMonitor* mon;
 
+        info("You are babo");
+
+
         if (replType == "WayPart") {
             buckets = ways; //not an option with WayPart
             mon = new UMonMonitor(numLines, umonLines, umonWays, pm->getNumPartitions(), buckets);
@@ -208,6 +211,8 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
             mon = new UMonMonitor(numLines, umonLines, umonWays, pm->getNumPartitions(), buckets);
 
         }
+
+        info("You are mungchungee");
 
         // TODO : DIPUMonMonitor로 만들어 주어야 함
 
@@ -229,6 +234,9 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
             bool testMode = config.get<bool>(prefix + "repl.testMode", false);
             prp = new WayPartReplPolicy(mon, pm, numLines, ways, testMode);
         } else if (replType == "WPDIP"){
+
+          info("You are byoongshin");
+
           bool testMode = config.get<bool>(prefix + "repl.testMode", false);
           prp = new WPDIP(mon, pm, numLines, ways, testMode);
         } else if (replType == "IdealLRUPart") {
