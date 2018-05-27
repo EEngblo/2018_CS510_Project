@@ -192,7 +192,7 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
         uint32_t umonWays = config.get<uint32_t>(prefix + "repl.umonWays", ways);
         uint32_t buckets;
 
-        PartitionMonitor* mon
+        PartitionMonitor* mon;
 
         if (replType == "WayPart") {
             buckets = ways; //not an option with WayPart
