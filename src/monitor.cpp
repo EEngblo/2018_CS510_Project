@@ -256,6 +256,5 @@ bool DIPUMonMonitor::isBIP(uint32_t partition){
 bool UMonMonitor::isBIP(uint32_t partition){
     assert(partition < monitors.size());
 
-    auto monitor = monitors[partition];
     return false;
 }
