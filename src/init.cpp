@@ -204,6 +204,8 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
             buckets = ways; //not an option with WayPart
             mon = new UMonMonitor(numLines, umonLines, umonWays, pm->getNumPartitions(), buckets);
         } else if (replType == "WPDIP"){
+          info("You are YOONTHOO");
+
           buckets = ways;
           mon = new DIPUMonMonitor(numLines, umonLines, umonWays, pm->getNumPartitions(), buckets);
         } else { //Vantage or Ideal

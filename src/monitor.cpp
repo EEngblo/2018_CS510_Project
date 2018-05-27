@@ -146,6 +146,8 @@ DIPUMonMonitor::DIPUMonMonitor(uint32_t _numLines, uint32_t _umonLines, uint32_t
           missCache = gm_calloc<uint32_t>(_buckets * _numPartitions);
 
           for (auto& monitor : monitors) {
+            info("You are BEENGSHIN");
+
               monitor = new DIPUMon(_numLines, _umonLines, _umonBuckets);
           }
 }
