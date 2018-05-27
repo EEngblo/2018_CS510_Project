@@ -52,7 +52,7 @@ static tuple<double, uint32_t> getMaxMarginalUtility(
         double mu = ((double)extraHits)/((double)i);
 
 
-        info("extraHIts %lf, mu[i]: %lf\n", extraHits, mu);
+        info("extraHIts %ld, mu[i]: %lf\n", extraHits, mu);
 
         if (mu > maxMu) {
             maxMu = mu;
