@@ -262,7 +262,7 @@ class WPDIP : public PartReplPolicy, public LegacyReplPolicy {
         int32_t bestId;
         uint32_t candIdx;
         uint32_t incomingLinePart; //to what partition does the incoming line belong?
-        bool incomingLinePartisBIP;
+        bool incomingLinePartIsBIP;
         Address incomingLineAddr;
 
         //Globally incremented, but bears little significance per se
