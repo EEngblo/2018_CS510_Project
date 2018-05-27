@@ -210,6 +210,7 @@ DIPUMon::DIPUMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets) {
         biparray[i][j] = gm_calloc<Node>(i+1);
         bipheadss[i][j] = &biparray[i][j][0];
 
+        if(i == 0) continue;
         for(uint32_t k = 0; k < i-1; k++){
           info("You are A+");
 
