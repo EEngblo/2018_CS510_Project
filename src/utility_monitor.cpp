@@ -179,7 +179,7 @@ DIPUMon::DIPUMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets) {
     for(uint32_t i = 0; i < buckets; i++)
       setDueling[i] = ZERO_POINT;
 
-    givenways = 4; //: this is our system configuration!
+    givenways = 3; //: this is our system configuration!
                             //       if your system configuration is different (16ways LLC, 4 cores)
                             //       you should change this.
 
