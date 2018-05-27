@@ -96,6 +96,8 @@ class PartitionMonitor : public GlobAlloc {
         // called by Partitioner each interval to reset miss counters
         virtual void reset(uint32_t* curAllocs) = 0;
 
+        virtual bool isBIP(uint32_t partition) = true;
+
         uint32_t getBuckets() const { return buckets; }
 
     protected:
