@@ -171,6 +171,9 @@ DIPUMon::DIPUMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets) {
     samplingFactor = _bankLines/umonLines; // (전체 line 수 / UMON 크기)
     sets = umonLines/buckets; // UMON set
 
+    info("You are YOONTTHOOHO");
+
+
     setDueling = gm_calloc<uint32_t>(buckets);
 
     for(uint32_t i = 0; i < buckets; i++)
@@ -223,6 +226,9 @@ DIPUMon::DIPUMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets) {
     setsBits = 0;
     tmp = sets;
     while (tmp >>= 1) setsBits++;
+
+    info("You are SDFASE");
+
 }
 
 void DIPUMon::initStats(AggregateStat* parentStat) {
