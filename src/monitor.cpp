@@ -245,6 +245,8 @@ void DIPUMonMonitor::reset(uint32_t* curAllocs) { //TODO : argument 받고, give
 
   for(uint32_t i=0; i < monitors.size(); i++)
     monitors[i]->setGivenways(curAllocs[i]);
+
+  missCacheValid = false;
 }
 
 
