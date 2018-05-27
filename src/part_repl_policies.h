@@ -233,6 +233,183 @@ class WayPartReplPolicy : public PartReplPolicy, public LegacyReplPolicy {
         }
 };
 
+
+
+class WPDIP : public PartReplPolicy, public LegacyReplPolicy {
+    private:
+        PartInfo* partInfo;
+        uint32_t partitions;
+
+        uint32_t totalSize;
+        uint32_t waySize;
+        uint32_t ways;
+
+        struct WayPartInfo {
+            Address addr; //FIXME: This is redundant due to the replacement policy interface
+            uint64_t ts; //timestamp, >0 if in the cache, == 0 if line is empty
+            uint32_t p;
+        };
+
+        WayPartInfo* array;
+
+        uint32_t* wayPartIndex; //stores partition of each way
+
+        bool testMode;
+
+        PAD();
+
+        //Replacement process state (RW)
+        int32_t bestId;
+        uint32_t candIdx;
+        uint32_t incomingLinePart; //to what partition does the incoming line belong?
+        Address incomingLineAddr;
+
+        //Globally incremented, but bears little significance per se
+        uint64_t timestamp;
+
+    public:
+        WPDIP(PartitionMonitor* _monitor, PartMapper* _mapper, uint64_t _lines, uint32_t _ways, bool _testMode)
+                : PartReplPolicy(_monitor, _mapper), totalSize(_lines), ways(_ways), testMode(_testMode)
+        {
+            partitions = mapper->getNumPartitions();
+            waySize = totalSize/ways;
+            assert(waySize*ways == totalSize); //no partial ways...
+
+            partInfo = gm_calloc<PartInfo>(partitions);
+            for (uint32_t i = 0; i < partitions; i++) {
+                partInfo[i].targetSize = 0;
+
+                //Need placement new, these object have vptr
+                new (&partInfo[i].profHits) Counter;
+                new (&partInfo[i].profMisses) Counter;
+                new (&partInfo[i].profSelfEvictions) Counter;
+                new (&partInfo[i].profExtEvictions) Counter;
+            }
+
+            array = gm_calloc<WayPartInfo>(totalSize); //all have ts, p == 0...
+            partInfo[0].size = totalSize; // so partition 0 has all the lines
+
+            wayPartIndex = gm_calloc<uint32_t>(ways);
+            for (uint32_t w = 0; w < ways; w++) {
+                //Do initial way assignment, partitioner has no profiling info yet
+                uint32_t p = w*partitions/ways; // in [0, ..., partitions-1]
+                wayPartIndex[w] = p;
+                partInfo[p].targetSize += waySize;
+            }
+
+            candIdx = 0;
+            bestId = -1;
+            timestamp = 1;
+        }
+
+        void initStats(AggregateStat* parentStat) {
+            //AggregateStat* partsStat = new AggregateStat(true /*this is a regular aggregate, ONLY PARTITION STATS GO IN HERE*/);
+            AggregateStat* partsStat = new AggregateStat(false); //don't make it a regular aggregate... it gets compacted in periodic stats and becomes useless!
+            partsStat->init("part", "Partition stats");
+            for (uint32_t p = 0; p < partitions; p++) {
+                std::stringstream pss;
+                pss << "part-" << p;
+                AggregateStat* partStat = new AggregateStat();
+                partStat->init(gm_strdup(pss.str().c_str()), "Partition stats");
+                ProxyStat* pStat;
+                pStat = new ProxyStat(); pStat->init("sz", "Actual size", &partInfo[p].size); partStat->append(pStat);
+                pStat = new ProxyStat(); pStat->init("tgtSz", "Target size", &partInfo[p].targetSize); partStat->append(pStat);
+                partInfo[p].profHits.init("hits", "Hits"); partStat->append(&partInfo[p].profHits);
+                partInfo[p].profMisses.init("misses", "Misses"); partStat->append(&partInfo[p].profMisses);
+                partInfo[p].profSelfEvictions.init("selfEvs", "Evictions caused by us"); partStat->append(&partInfo[p].profSelfEvictions);
+                partInfo[p].profExtEvictions.init("extEvs", "Evictions caused by others"); partStat->append(&partInfo[p].profExtEvictions);
+
+                partsStat->append(partStat);
+            }
+            parentStat->append(partsStat);
+        }
+
+        void update(uint32_t id, const MemReq* req) {
+            WayPartInfo* e = &array[id];
+            if (e->ts > 0) { //this is a hit update
+                partInfo[e->p].profHits.inc();
+            } else { //post-miss update, old line has been removed, this is empty
+                uint32_t oldPart = e->p;
+                uint32_t newPart = incomingLinePart;
+                if (oldPart != newPart) {
+                    partInfo[oldPart].size--;
+                    partInfo[oldPart].profExtEvictions.inc();
+                    partInfo[newPart].size++;
+                } else {
+                    partInfo[oldPart].profSelfEvictions.inc();
+                }
+                partInfo[newPart].profMisses.inc();
+                e->p = newPart;
+            }
+            e->ts = timestamp++;
+
+            //Update partitioner...
+            monitor->access(e->p, e->addr);
+        }
+
+        void startReplacement(const MemReq* req) {
+            assert(candIdx == 0);
+            assert(bestId == -1);
+            incomingLinePart = mapper->getPartition(*req);
+            incomingLineAddr = req->lineAddr;
+        }
+
+        void recordCandidate(uint32_t id) {
+            assert(candIdx < ways);
+            WayPartInfo* c = &array[id]; //candidate info
+            WayPartInfo* best = (bestId >= 0)? &array[bestId] : nullptr;
+            uint32_t way = candIdx++;
+            //In test mode, this works as LRU
+            if (testMode || wayPartIndex[way] == incomingLinePart) { //this is a way we can fill
+                if (best == nullptr) {
+                    bestId = id;
+                } else {
+                    //NOTE: This is actually not feasible without tagging. But what IS feasible is to stop updating the LRU position on new fills. We could kill this, and profile the differences.
+                    if ( testMode || (c->p == incomingLinePart && best->p == incomingLinePart) ) {
+                        if (c->ts < best->ts) bestId = id;
+                    } else if (c->p == incomingLinePart && best->p != incomingLinePart) {
+                        //c wins
+                    } else if (c->p != incomingLinePart && best->p == incomingLinePart) {
+                        //c loses
+                        bestId = id;
+                    } else { //none in our partition, this should be transient but at least enforce LRU
+                        if (c->ts < best->ts) bestId = id;
+                    }
+                }
+            }
+        }
+
+        uint32_t getBestCandidate() {
+            assert(bestId >= 0);
+            return bestId;
+        }
+
+        void replaced(uint32_t id) { //TODO
+            candIdx = 0;
+            bestId = -1;
+            array[id].ts = 0;
+            array[id].addr = incomingLineAddr;
+            //info("0x%lx", incomingLineAddr);
+        }
+
+    private:
+        void setPartitionSizes(const uint32_t* waysPart) {
+            uint32_t curWay = 0;
+            for (uint32_t p = 0; p < partitions; p++) {
+                partInfo[p].targetSize = totalSize*waysPart[p]/ways;
+#if UMON_INFO
+                info("part %d assigned %d ways", p, waysPart[p]);
+#endif
+                for (uint32_t i = 0; i < waysPart[p]; i++) wayPartIndex[curWay++] = p;
+            }
+#if UMON_INFO
+            for (uint32_t w = 0; w < ways; w++) info("wayPartIndex[%d] = %d", w, wayPartIndex[w]);
+#endif
+            assert(curWay == ways);
+        }
+};
+
+
 #define VANTAGE_8BIT_BTS 1 //1 for 8-bit coarse-grain timestamps, 0 for 64-bit coarse-grain (no wrap-arounds)
 
 /* Vantage replacement policy. Please refer to our ISCA 2011 paper for implementation details.

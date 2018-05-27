@@ -65,6 +65,7 @@ uint64_t computePartitioningTotalUtility(
     return noCacheMisses - curPartMisses;
 }
 
+// UCP 논문의 Lookahead algorithm
 void computeBestPartitioning(
     uint32_t numPartitions, uint32_t buckets, uint32_t minAlloc, bool* forbidden,
     uint32_t* allocs, const PartitionMonitor& monitor) {

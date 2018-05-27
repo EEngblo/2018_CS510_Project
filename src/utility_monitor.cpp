@@ -31,22 +31,43 @@
 
 UMon::UMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets) {
     umonLines = _umonLines;
-    buckets = _buckets;
-    samplingFactor = _bankLines/umonLines;
-    sets = umonLines/buckets;
+    buckets = _buckets; // UMON ways
+    samplingFactor = _bankLines/umonLines; // (전체 line 수 / UMON 크기)
+    sets = umonLines/buckets; // UMON set
 
-    heads = gm_calloc<Node*>(sets);
-    array = gm_calloc<Node*>(sets);
+    mipheads = gm_calloc<Node*>(sets);
+    miparray = gm_calloc<Node*>(sets);
     for (uint32_t i = 0; i < sets; i++) {
-        array[i] = gm_calloc<Node>(buckets);
-        heads[i] = &array[i][0];
+        miparray[i] = gm_calloc<Node>(buckets);
+        mipheads[i] = &miparray[i][0];
         for (uint32_t j = 0; j < buckets-1; j++) {
-            array[i][j].next = &array[i][j+1];
+            miparray[i][j].next = &miparray[i][j+1];
         }
     }
 
-    curWayHits = gm_calloc<uint64_t>(buckets);
-    curMisses = 0;
+    bipheadss = gm_calloc<Node**>(buckets);
+    biparray = gm_calloc<Node**>(buckets);
+
+    for(uint32_t i = 0; i < buckets; i++){
+      bipheadss[i] = gm_calloc<Node*>(sets);
+      biparray[i] = gm_calloc<Node*>(sets);
+
+      for(uint32_t j = 0; j < sets; j++){
+        biparray[i][j] = gm_calloc<Node>(i+1);
+        bipheadss[i][j] = &biparray[i][j][0];
+
+        for(uint32_t k = 0; k < i-1; k++){
+          biparray[i][j][k].next = &biparray[i][j][k+1];
+        }
+      }
+
+    }
+
+    mipWayHits = gm_calloc<uint64_t>(buckets);
+    mipMisses = 0;
+
+    bipWayHits = gm_calloc<uint64_t>(buckets);
+    bipMisses = 0;
 
     hf = new H3HashFamily(2, 32, 0xF000BAAD);
 
@@ -82,13 +103,13 @@ void UMon::access(Address lineAddr) {
 
     // Check hit
     Node* prev = nullptr;
-    Node* cur = heads[set];
+    Node* cur = mipheads[set];
     bool hit = false;
     for (uint32_t b = 0; b < buckets; b++) {
         if (cur->addr == lineAddr) { //Hit at position b, profile
             //profHits.inc();
             //profWayHits.inc(b);
-            curWayHits[b]++;
+            mipWayHits[b]++;
             hit = true;
             break;
         } else if (b < buckets-1) {
@@ -97,9 +118,11 @@ void UMon::access(Address lineAddr) {
         }
     }
 
+
+
     //Profile miss, kick cur out, put lineAddr in
     if (!hit) {
-        curMisses++;
+        mipMisses++;
         //profMisses.inc();
         assert(cur->next == nullptr);
         cur->addr = lineAddr;
@@ -108,24 +131,24 @@ void UMon::access(Address lineAddr) {
     //Move cur to MRU (happens regardless of whether this is a hit or a miss)
     if (prev) {
         prev->next = cur->next;
-        cur->next = heads[set];
-        heads[set] = cur;
+        cur->next = mipheads[set];
+        mipheads[set] = cur;
     }
 }
 
 uint64_t UMon::getNumAccesses() const {
-    uint64_t total = curMisses;
+    uint64_t total = mipMisses;
     for (uint32_t i = 0; i < buckets; i++) {
-        total += curWayHits[buckets - i - 1];
+        total += mipWayHits[buckets - i - 1];
     }
     return total;
 }
 
 void UMon::getMisses(uint64_t* misses) {
-    uint64_t total = curMisses;
+    uint64_t total = mipMisses;
     for (uint32_t i = 0; i < buckets; i++) {
         misses[buckets - i] = total;
-        total += curWayHits[buckets - i - 1];
+        total += mipWayHits[buckets - i - 1];
     }
     misses[0] = total;
 #if DEBUG_UMON
@@ -136,9 +159,8 @@ void UMon::getMisses(uint64_t* misses) {
 
 
 void UMon::startNextInterval() {
-curMisses = 0;
+mipMisses = 0;
                 for (uint32_t b = 0; b < buckets; b++) {
-                    curWayHits[b] = 0;
+                    mipWayHits[b] = 0;
                 }
 }
-

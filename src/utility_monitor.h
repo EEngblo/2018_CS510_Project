@@ -77,5 +77,54 @@ class UMon : public GlobAlloc {
         uint32_t getBuckets() const { return buckets; }
 };
 
-#endif  // UTILITY_MONITOR_H_
+class DIPUMon : public GlobAlloc {
+    private:
+        uint32_t umonLines;
+        uint32_t samplingFactor; //Size of sampled cache (lines)/size of umon. Should be power of 2
+        uint32_t buckets; //umon ways
+        uint32_t sets; //umon sets. Should be power of 2.
 
+        //Used in masks for set indices and sampling factor descisions
+        uint64_t samplingFactorBits;
+        uint64_t setsBits;
+
+        uint64_t* mipWayHits;
+        uint64_t mipMisses;
+
+        uint64_t* bipWayHits;
+        uint64_t bipMisses;
+
+        Counter profHits;
+        Counter profMisses;
+        VectorCounter profWayHits;
+
+        //Even for high associativity/number of buckets, performance of this is not important because we downsample so much (so this is a LL)
+        struct Node {
+            Address addr;
+            struct Node* next;
+        };
+        Node** miparray;
+        Node** mipheads;
+
+        Node*** biparray;
+        Node*** bipheadss;
+
+        HashFamily* hf;
+
+    public:
+        UMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets);
+        void initStats(AggregateStat* parentStat);
+
+        void access(Address lineAddr);
+
+        uint64_t getNumAccesses() const;
+        void getMisses(uint64_t* misses);
+        void startNextInterval();
+
+        uint32_t getBuckets() const { return buckets; }
+};
+
+
+
+
+#endif  // UTILITY_MONITOR_H_
