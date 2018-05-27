@@ -33,6 +33,8 @@
 #include "partition_mapper.h"
 #include "partitioner.h"
 #include "repl_policies.h"
+#include <stdlib.h>
+#include <ctime>
 
 struct PartInfo {
     uint64_t size; //in lines
@@ -247,6 +249,7 @@ class WPDIP : public PartReplPolicy, public LegacyReplPolicy {
         struct WayPartInfo {
             Address addr; //FIXME: This is redundant due to the replacement policy interface
             uint64_t ts; //timestamp, >0 if in the cache, == 0 if line is empty
+            uint64_t old_ts;
             uint32_t p;
         };
 
@@ -325,6 +328,15 @@ class WPDIP : public PartReplPolicy, public LegacyReplPolicy {
             parentStat->append(partsStat);
         }
 
+        void replaced(uint32_t id) { //TODO
+            candIdx = 0;
+            bestId = -1;
+            array[id].old_ts = array[id].ts;
+            array[id].ts = 0;
+            array[id].addr = incomingLineAddr;
+            //info("0x%lx", incomingLineAddr);
+        }
+
         void update(uint32_t id, const MemReq* req) {
             WayPartInfo* e = &array[id];
             if (e->ts > 0) { //this is a hit update
@@ -342,11 +354,17 @@ class WPDIP : public PartReplPolicy, public LegacyReplPolicy {
                 partInfo[newPart].profMisses.inc();
                 e->p = newPart;
             }
-            e->ts = timestamp++;
-
+            if(incomingLinePartIsBIP && std::rand() % 32 == 0){
+                e->ts = e->old_ts;
+                timestamp++;
+            }else{
+              e->ts = timestamp++;
+            }
             //Update partitioner...
             monitor->access(e->p, e->addr);
         }
+
+
 
         void startReplacement(const MemReq* req) {
             assert(candIdx == 0);
@@ -354,6 +372,8 @@ class WPDIP : public PartReplPolicy, public LegacyReplPolicy {
             incomingLinePart = mapper->getPartition(*req);
             incomingLinePartIsBIP = monitor->isBIP(incomingLinePart);
             incomingLineAddr = req->lineAddr;
+            std::srand((unsigned int)time(NULL));
+
         }
 
         void recordCandidate(uint32_t id) {
@@ -386,13 +406,7 @@ class WPDIP : public PartReplPolicy, public LegacyReplPolicy {
             return bestId;
         }
 
-        void replaced(uint32_t id) { //TODO
-            candIdx = 0;
-            bestId = -1;
-            array[id].ts = 0;
-            array[id].addr = incomingLineAddr;
-            //info("0x%lx", incomingLineAddr);
-        }
+
 
     private:
         void setPartitionSizes(const uint32_t* waysPart) {
