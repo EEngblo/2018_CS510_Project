@@ -124,7 +124,7 @@ class UMonMonitor : public PartitionMonitor {
         g_vector<UMon*> monitors;       // individual monitors per partition
 };
 
-class UMonMonitor : public PartitionMonitor {
+class DIPUMonMonitor : public PartitionMonitor {
     public:
         DIPUMonMonitor(uint32_t _numLines, uint32_t _umonLines, uint32_t _umonBuckets, uint32_t _numPartitions, uint32_t _buckets);
         ~DIPUMonMonitor();
