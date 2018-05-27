@@ -100,7 +100,7 @@ void computeBestPartitioning(
             }
         }
 #if UMON_INFO
-        //info("LookaheadPartitioner: Iteration %d maxMu %f partition %d alloc %d newAlloc %d remaining %d", iter, maxMu, maxMuPart, maxMuAlloc, allocs[maxMuPart] + maxMuAlloc, balance - maxMuAlloc);
+        info("LookaheadPartitioner: Iteration %d maxMu %f partition %d alloc %d newAlloc %d remaining %d", iter, maxMu, maxMuPart, maxMuAlloc, allocs[maxMuPart] + maxMuAlloc, balance - maxMuAlloc);
 #endif
         assert(maxMuPart < numPartitions);
         allocs[maxMuPart] += maxMuAlloc;
