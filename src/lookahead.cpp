@@ -43,7 +43,12 @@ static tuple<double, uint32_t> getMaxMarginalUtility(
     for (uint32_t i = 1; i <= balance; i++) {
         //Use this when utility == misses
         uint64_t extraHits = monitor.get(part, partAlloc) - monitor.get(part, partAlloc+i);
+
+
         double mu = ((double)extraHits)/((double)i);
+
+
+        info("extraHIts %ld, mu[i]: %ld", extraHits, mu);
 
         if (mu > maxMu) {
             maxMu = mu;
