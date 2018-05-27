@@ -86,7 +86,7 @@ void computeBestPartitioning(
         (void)maxMuAlloc;  // make gcc happy when we're not profiling
         for (uint32_t i = 0; i < numPartitions; i++) {
             if (forbidden && forbidden[i]) {  // this partition doesn't get anything
-                //info("Allocating to %d forbiddden, skipping", i);
+                info("Allocating to %d forbiddden, skipping", i);
                 continue;
             }
 
