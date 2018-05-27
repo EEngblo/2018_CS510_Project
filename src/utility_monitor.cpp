@@ -25,7 +25,7 @@
 
 #include "utility_monitor.h"
 #include "hash.h"
-#include <stdlib>
+#include <stdlib.h>
 #include <ctime>
 
 #define DEBUG_UMON 0
