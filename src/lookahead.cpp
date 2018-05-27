@@ -71,15 +71,16 @@ void computeBestPartitioning(
     uint32_t* allocs, const PartitionMonitor& monitor) {
     uint32_t balance = buckets;
 
-    minAlloc = 0;
+    minAlloc = 1;
 
     // Zero out allocs or set to mins
     for (uint32_t i = 0; i < numPartitions; i++) {
         allocs[i] = minAlloc;
+        balance -= minAlloc;
+
         info("minAlloc: %d, allocs[i]: %d", minAlloc, allocs[i]);
     }
 
-    balance -= minAlloc;
 
     uint32_t iter = 0;  // purely for debug purposes
     while (balance > 0) {
