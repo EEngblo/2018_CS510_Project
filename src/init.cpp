@@ -164,7 +164,7 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
         rp = new NRUReplPolicy(numLines, candidates);
     } else if (replType == "Rand") {
         rp = new RandReplPolicy(candidates);
-    } else if (replType == "WayPart" || replType == "Vantage" || replType == "IdealLRUPart") {
+    } else if (replType == "WayPart" || replType == "Vantage" || replType == "IdealLRUPart" || replType == "WPDIP") {
         if (replType == "WayPart" && arrayType != "SetAssoc") panic("WayPart replacement requires SetAssoc array");
 
         //Partition mapper
