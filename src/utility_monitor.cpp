@@ -313,6 +313,7 @@ void DIPUMon::access(Address lineAddr) {
       bipcur = bipheadss[bb][set];
       biphit = false;
       for(uint32_t b = 0; b < bb+1; b++){
+        info("bipcur addr: %ud\n", bipcur);
         if(bipcur->addr == lineAddr) { //Hit
           bipWayHits[bb]++;
           biphit = true;
