@@ -133,3 +133,26 @@ void UMonMonitor::reset() {
     }
     missCacheValid = false;
 }
+
+
+DIPUMonMonitor::DIPUMonMonitor(uint32_t _numLines, uint32_t _umonLines, uint32_t _umonBuckets, uint32_t _numPartitions, uint32_t _buckets)
+        : PartitionMonitor(_buckets)
+        , missCache(nullptr)
+        , missCacheValid(false)
+        , monitors(_numPartitions, nullptr) {
+    assert(_numPartitions > 0);
+
+    missCache = gm_calloc<uint32_t>(_buckets * _numPartitions);
+
+    for (auto& monitor : monitors) {
+        monitor = new DIPUMon(_numLines, _umonLines, _umonBuckets);
+    }
+}
+
+DIPUMonMonitor::~DIPMonMonitor() {
+    for (auto monitor : monitors) {
+        delete monitor;
+    }
+    gm_free(missCache);
+    monitors.clear();
+}

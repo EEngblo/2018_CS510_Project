@@ -92,7 +92,10 @@ class DIPUMon : public GlobAlloc {
         uint64_t mipMisses;
 
         uint64_t* bipWayHits;
-        uint64_t bipMisses;
+        uint64_t* bipMisses;
+
+        uint32_t* setDueling;
+        uint32_t givenways;
 
         Counter profHits;
         Counter profMisses;

@@ -198,7 +198,18 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
         }
 
         PartitionMonitor* mon = new UMonMonitor(numLines, umonLines, umonWays, pm->getNumPartitions(), buckets);
+        // TODO : DIPUMonMonitor로 만들어 주어야 함
 
+        // TODO TODO TODO TODO TODO TODO TODO TODO
+                // TODO TODO TODO TODO TODO TODO TODO TODO
+                        // TODO TODO TODO TODO TODO TODO TODO TODO
+                                // TODO TODO TODO TODO TODO TODO TODO TODO
+                                        // TODO TODO TODO TODO TODO TODO TODO TODO
+                                                // TODO TODO TODO TODO TODO TODO TODO TODO
+                                                        // TODO TODO TODO TODO TODO TODO TODO TODO
+                                                                // TODO TODO TODO TODO TODO TODO TODO TODO
+                                                                        // TODO TODO TODO TODO TODO TODO TODO TODO
+                                                                                // TODO TODO TODO TODO TODO TODO TODO TODO
         //Finally, instantiate the repl policy
         PartReplPolicy* prp;
         double allocPortion = 1.0;
@@ -1024,4 +1035,3 @@ void SimInit(const char* configFile, const char* outputDir, uint32_t shmid) {
     //Causes every other process to wake up
     gm_set_glob_ptr(zinfo);
 }
-
