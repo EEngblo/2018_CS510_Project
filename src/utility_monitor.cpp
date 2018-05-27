@@ -298,8 +298,8 @@ void DIPUMon::access(Address lineAddr) {
       bipcur = bipheadss[bb][set];
       biphit = false;
       for(uint32_t b = 0; b < bb+1; b++){
-        if(bipcur->addr == lineaddr) { //Hit
-          bipwayhits[bb]++;
+        if(bipcur->addr == lineAddr) { //Hit
+          bipWayhits[bb]++;
           biphit = true;
           break;
         } else if (b < bb){
@@ -331,7 +331,7 @@ bool DIPUMon::isBIP(){
   return setDueling[givenways-1] < ZERO_POINT;
 }
 
-void DIPUMON::setGivenways(uint32_t _givenways){
+void DIPUMon::setGivenways(uint32_t _givenways){
   givenways = _givenways;
 }
 
