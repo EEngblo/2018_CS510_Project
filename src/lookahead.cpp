@@ -40,6 +40,10 @@ static tuple<double, uint32_t> getMaxMarginalUtility(
     uint32_t balance, const PartitionMonitor& monitor) {
     double maxMu = -1.0;
     uint32_t maxMuAlloc = 0;
+
+    info("balance : %d\n", balance);
+
+
     for (uint32_t i = 1; i <= balance; i++) {
         //Use this when utility == misses
         uint64_t extraHits = monitor.get(part, partAlloc) - monitor.get(part, partAlloc+i);
