@@ -299,7 +299,7 @@ void DIPUMon::access(Address lineAddr) {
       biphit = false;
       for(uint32_t b = 0; b < bb+1; b++){
         if(bipcur->addr == lineAddr) { //Hit
-          bipWayhits[bb]++;
+          bipWayHits[bb]++;
           biphit = true;
           break;
         } else if (b < bb){
@@ -332,7 +332,7 @@ bool DIPUMon::isBIP(){
 }
 
 void DIPUMon::setGivenways(uint32_t _givenways){
-  givenways = _givenways;
+  this.givenways = _givenways;
 }
 
 
