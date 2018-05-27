@@ -41,7 +41,7 @@ static tuple<double, uint32_t> getMaxMarginalUtility(
     double maxMu = -1.0;
     uint32_t maxMuAlloc = 0;
 
-    info("balance : %d\n", balance);
+    //info("balance : %d\n", balance);
 
 
     for (uint32_t i = 1; i <= balance; i++) {
@@ -52,7 +52,7 @@ static tuple<double, uint32_t> getMaxMarginalUtility(
         double mu = ((double)extraHits)/((double)i);
 
 
-        info("extraHIts %ld, mu[i]: %lf\n", extraHits, mu);
+        //info("extraHIts %ld, mu[i]: %lf\n", extraHits, mu);
 
         if (mu > maxMu) {
             maxMu = mu;
@@ -87,7 +87,7 @@ void computeBestPartitioning(
         allocs[i] = minAlloc;
         balance -= minAlloc;
 
-        info("minAlloc: %d, allocs[i]: %d", minAlloc, allocs[i]);
+        //info("minAlloc: %d, allocs[i]: %d", minAlloc, allocs[i]);
     }
 
 
@@ -98,7 +98,7 @@ void computeBestPartitioning(
         uint32_t maxMuAlloc = 0;
         (void)maxMuAlloc;  // make gcc happy when we're not profiling
         for (uint32_t i = 0; i < numPartitions; i++) {
-          info("balance : %d\n", balance);
+          //info("balance : %d\n", balance);
 
             if (forbidden && forbidden[i]) {  // this partition doesn't get anything
                 info("Allocating to %d forbiddden, skipping", i);
