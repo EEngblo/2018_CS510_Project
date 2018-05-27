@@ -179,7 +179,7 @@ DIPUMon::DIPUMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets) {
     uint32_t givenways = 4; //TODO : this is our system configuration!
                             //       if your system configuration is different (16ways LLC, 4 cores)
                             //       you should change this.
-
+    givenways += 0;
     mipheads = gm_calloc<Node*>(sets);
     miparray = gm_calloc<Node*>(sets);
     for (uint32_t i = 0; i < sets; i++) {
