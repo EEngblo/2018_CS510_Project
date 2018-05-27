@@ -332,7 +332,7 @@ bool DIPUMon::isBIP(){
 }
 
 void DIPUMon::setGivenways(uint32_t _givenways){
-  this.givenways = _givenways;
+  this->givenways = _givenways;
 }
 
 

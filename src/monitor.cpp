@@ -146,7 +146,8 @@ void DIPUMonMonitor::reset(uint32_t* curAllocs) { //TODO : argument 받고, give
 
 
 DIPUMonMonitor::DIPUMonMonitor(uint32_t _numLines, uint32_t _umonLines, uint32_t _umonBuckets, uint32_t _numPartitions, uint32_t _buckets)
-        : PartitionMonitor(_buckets)
+        : UMonMonitor(_numLines, _umonLines, _umonBuckets, _numPartitions, _buckets)
+        ,PartitionMonitor(_buckets)
         , missCache(nullptr)
         , missCacheValid(false)
         , monitors(_numPartitions, nullptr) {
