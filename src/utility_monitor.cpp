@@ -210,8 +210,7 @@ DIPUMon::DIPUMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets) {
         biparray[i][j] = gm_calloc<Node>(i+1);
         bipheadss[i][j] = &biparray[i][j][0];
 
-        if(i == 0) continue;
-        for(uint32_t k = 0; k < i-1; k++){
+        for(uint32_t k = 0; k < i; k++){
           info("You are A+");
 
           biparray[i][j][k].next = &biparray[i][j][k+1];
@@ -313,7 +312,7 @@ void DIPUMon::access(Address lineAddr) {
       bipcur = bipheadss[bb][set];
       biphit = false;
       for(uint32_t b = 0; b < bb+1; b++){
-        info("bipcur addr: %ud\n", bipcur);
+        //info("bipcur addr: %ud\n", bipcur);
         if(bipcur->addr == lineAddr) { //Hit
           bipWayHits[bb]++;
           biphit = true;
