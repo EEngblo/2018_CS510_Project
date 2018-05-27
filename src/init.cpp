@@ -145,6 +145,9 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
     string replType = config.get<const char*>(prefix + "repl.type", (arrayType == "IdealLRUPart")? "IdealLRUPart" : "LRU");
     ReplPolicy* rp = nullptr;
 
+    info("You are y");
+
+
     if (replType == "LRU" || replType == "LRUNoSh") {
         bool sharersAware = (replType == "LRU") && !isTerminal;
         if (sharersAware) {
