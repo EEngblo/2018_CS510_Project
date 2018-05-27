@@ -124,14 +124,24 @@ class UMonMonitor : public PartitionMonitor {
         g_vector<UMon*> monitors;       // individual monitors per partition
 };
 
-class DIPUMonMonitor : public UMonMonitor {
-  public:
-      DIPUMonMonitor(uint32_t _numLines, uint32_t _umonLines, uint32_t _umonBuckets, uint32_t _numPartitions, uint32_t _buckets);
-      ~DIPUMonMonitor();
-      void reset(uint32_t* curAllocs);
+class UMonMonitor : public PartitionMonitor {
+    public:
+        DIPUMonMonitor(uint32_t _numLines, uint32_t _umonLines, uint32_t _umonBuckets, uint32_t _numPartitions, uint32_t _buckets);
+        ~DIPUMonMonitor();
 
-  private:
-    g_vector<DIPUMon*> monitors;
+        uint32_t getNumPartitions() const { return monitors.size(); }
+        void access(uint32_t partition, Address lineAddr);
+        uint32_t get(uint32_t partition, uint32_t bucket) const;
+        uint32_t getNumAccesses(uint32_t partition) const;
+        void reset(uint32_t* curAllocs);
+
+    private:
+        void getMissCurves() const;
+        void getMissCurve(uint32_t* misses, uint32_t partition) const;
+
+        mutable uint32_t* missCache;
+        mutable bool missCacheValid;
+        g_vector<DIPUMon*> monitors;       // individual monitors per partition
 };
 
 #endif  // PARTITIONER_H_
