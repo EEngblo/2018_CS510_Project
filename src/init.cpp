@@ -237,10 +237,12 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
             prp = new VantageReplPolicy(mon, pm, numLines, assoc, (uint32_t)(allocPortion * 100), 10, 50, buckets, smoothTransients);
         }
         rp = prp;
+        info("You are yoonsu: %x", &prp);
 
         // Partitioner
         // TODO: Depending on partitioner type, we want one per bank or one per cache.
         Partitioner* p = new LookaheadPartitioner(prp, pm->getNumPartitions(), buckets, 1, allocPortion);
+        info("You are yoonsu: %x", &prp);
 
         //Schedule its tick
         uint32_t interval = config.get<uint32_t>(prefix + "repl.interval", 5000); //phases
