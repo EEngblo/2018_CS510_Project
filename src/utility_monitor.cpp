@@ -186,6 +186,8 @@ DIPUMon::DIPUMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets) {
     mipheads = gm_calloc<Node*>(sets);
     miparray = gm_calloc<Node*>(sets);
     for (uint32_t i = 0; i < sets; i++) {
+      info("You are F");
+
         miparray[i] = gm_calloc<Node>(buckets);
         mipheads[i] = &miparray[i][0];
         for (uint32_t j = 0; j < buckets-1; j++) {
@@ -197,14 +199,20 @@ DIPUMon::DIPUMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets) {
     biparray = gm_calloc<Node**>(buckets);
 
     for(uint32_t i = 0; i < buckets; i++){
+      info("You are FF");
+
       bipheadss[i] = gm_calloc<Node*>(sets);
       biparray[i] = gm_calloc<Node*>(sets);
 
       for(uint32_t j = 0; j < sets; j++){
+        info("You are A0");
+
         biparray[i][j] = gm_calloc<Node>(i+1);
         bipheadss[i][j] = &biparray[i][j][0];
 
         for(uint32_t k = 0; k < i-1; k++){
+          info("You are A+");
+
           biparray[i][j][k].next = &biparray[i][j][k+1];
         }
       }
