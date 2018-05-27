@@ -74,6 +74,7 @@ void computeBestPartitioning(
     // Zero out allocs or set to mins
     for (uint32_t i = 0; i < numPartitions; i++) {
         allocs[i] = minAlloc;
+        info("minAlloc: %d, allocs[i]: %d", minAlloc, allocs[i]);
     }
 
     balance -= minAlloc;
