@@ -191,13 +191,21 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
         uint32_t umonLines = config.get<uint32_t>(prefix + "repl.umonLines", 256);
         uint32_t umonWays = config.get<uint32_t>(prefix + "repl.umonWays", ways);
         uint32_t buckets;
+
+        PartitionMonitor* mon
+
         if (replType == "WayPart") {
             buckets = ways; //not an option with WayPart
+            mon = new UMonMonitor(numLines, umonLines, umonWays, pm->getNumPartitions(), buckets);
+        } else if (replType == "WPDIP"){
+          buckets = ways;
+          mon = new DIPUMonMonitor(numLines, umonLines, umonWays, pm->getNumPartitions(), buckets);
         } else { //Vantage or Ideal
             buckets = config.get<uint32_t>(prefix + "repl.buckets", 256);
+            mon = new UMonMonitor(numLines, umonLines, umonWays, pm->getNumPartitions(), buckets);
+
         }
 
-        PartitionMonitor* mon = new UMonMonitor(numLines, umonLines, umonWays, pm->getNumPartitions(), buckets);
         // TODO : DIPUMonMonitor로 만들어 주어야 함
 
         // TODO TODO TODO TODO TODO TODO TODO TODO
@@ -217,6 +225,8 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
             //if set, drives partitioner but doesn't actually do partitioning
             bool testMode = config.get<bool>(prefix + "repl.testMode", false);
             prp = new WayPartReplPolicy(mon, pm, numLines, ways, testMode);
+        } else if (replType == "WPDIP"){
+          prp = new WPDIP(mon, pm, numLines, ways, testMode);
         } else if (replType == "IdealLRUPart") {
             prp = new IdealLRUPartReplPolicy(mon, pm, numLines, buckets);
         } else { //Vantage
