@@ -293,7 +293,7 @@ void DIPUMon::access(Address lineAddr) {
 
 
     for(uint32_t bb = 0; bb < buckets; bb++){
-      std::srand(unsigned int)time(NULL);
+      std::srand((unsigned int)time(NULL));
       bipprev = nullptr;
       bipcur = bipheadss[bb][set];
       biphit = false;

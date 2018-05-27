@@ -115,7 +115,7 @@ class DIPUMon : public GlobAlloc {
         HashFamily* hf;
 
     public:
-        UMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets);
+        DIPUMon(uint32_t _bankLines, uint32_t _umonLines, uint32_t _buckets);
         void initStats(AggregateStat* parentStat);
 
         void access(Address lineAddr);
