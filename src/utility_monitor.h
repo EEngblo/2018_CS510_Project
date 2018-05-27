@@ -31,7 +31,7 @@
 #include "stats.h"
 
 //Print some information regarding utility monitors and partitioning
-#define UMON_INFO 0
+#define UMON_INFO 1
 //#define UMON_INFO 1
 
 class HashFamily;
