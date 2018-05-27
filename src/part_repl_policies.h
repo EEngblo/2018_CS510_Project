@@ -26,6 +26,8 @@
 #ifndef PART_REPL_POLICIES_H_
 #define PART_REPL_POLICIES_H_
 
+#define UMON_INFO 1
+
 #include <sstream>
 #include <stdint.h>
 #include "event_queue.h"
