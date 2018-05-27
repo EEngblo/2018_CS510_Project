@@ -226,6 +226,7 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
             bool testMode = config.get<bool>(prefix + "repl.testMode", false);
             prp = new WayPartReplPolicy(mon, pm, numLines, ways, testMode);
         } else if (replType == "WPDIP"){
+          bool testMode = config.get<bool>(prefix + "repl.testMode", false);
           prp = new WPDIP(mon, pm, numLines, ways, testMode);
         } else if (replType == "IdealLRUPart") {
             prp = new IdealLRUPartReplPolicy(mon, pm, numLines, buckets);
