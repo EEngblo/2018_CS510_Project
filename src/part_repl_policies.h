@@ -262,6 +262,7 @@ class WPDIP : public PartReplPolicy, public LegacyReplPolicy {
         int32_t bestId;
         uint32_t candIdx;
         uint32_t incomingLinePart; //to what partition does the incoming line belong?
+        bool incomingLinePartisBIP;
         Address incomingLineAddr;
 
         //Globally incremented, but bears little significance per se
@@ -351,6 +352,7 @@ class WPDIP : public PartReplPolicy, public LegacyReplPolicy {
             assert(candIdx == 0);
             assert(bestId == -1);
             incomingLinePart = mapper->getPartition(*req);
+            incomingLinePartIsBIP = monitor->isBIP(incomingLinePart);
             incomingLineAddr = req->lineAddr;
         }
 

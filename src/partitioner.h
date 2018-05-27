@@ -134,6 +134,7 @@ class DIPUMonMonitor : public PartitionMonitor {
         uint32_t get(uint32_t partition, uint32_t bucket) const;
         uint32_t getNumAccesses(uint32_t partition) const;
         void reset(uint32_t* curAllocs);
+        bool isBIP(uint32_t partition);
 
     private:
         void getMissCurves() const;

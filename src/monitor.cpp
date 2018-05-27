@@ -243,5 +243,12 @@ void DIPUMonMonitor::reset(uint32_t* curAllocs) { //TODO : argument 받고, give
 
   for(uint32_t i=0; i < monitors.size(); i++)
     monitors[i]->setGivenways(curAllocs[i]);
+}
 
+
+bool DIPUMonMonitor::isBIP(uint32_t partition){
+    assert(partition < monitors.size());
+
+    auto monitor = monitors[partition];
+    return monitor->isBIP();
 }
