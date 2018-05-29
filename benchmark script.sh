@@ -1,4 +1,7 @@
 #!/bin/sh
+rm LRU.txt
+rm UCP.txt
+rm WPDIP.txt
 
 for (( i = 1; i <= 15; i++))
 do
