@@ -32,7 +32,7 @@ totalInstrs = np.sum(dset[-1]['core']['instrs'])
 totalCycles = np.sum(dset[-1]['core']['cycles'] + dset[-1]['core']['cCycles'])
 
 cmdargs = str(sys.argv[0])
-f = open(cmdargs, 'w')
+f = open(cmdargs, 'a')
 f.write(str(l3_hits) + "\n")
 f.write(str(l3_misses) + "\n")
 f.write(str(totalInstrs) + "\n")
