@@ -1,17 +1,17 @@
-$ZSIMAPPSPATH/build/speccpu2006/perlbench/perlbench -I$ZSIMAPPSPATH/build/speccpu2006/perlbench/lib $ZSIMAPPSPATH/build/speccpu2006/perlbench/diffmail.pl 4 800 10 17 19 300
-$ZSIMAPPSPATH/build/speccpu2006/bzip2/bzip2 $ZSIMAPPSPATH/build/speccpu2006/bzip2/input.combined 200
-$ZSIMAPPSPATH/build/speccpu2006/gcc/gcc $ZSIMAPPSPATH/build/speccpu2006/gcc/scilab.i -o $ZSIMAPPSPATH/build/speccpu2006/gcc/scilab.s
-$ZSIMAPPSPATH/build/speccpu2006/mcf/mcf $ZSIMAPPSPATH/build/speccpu2006/mcf/inp.in
-$ZSIMAPPSPATH/build/speccpu2006/zeusmp/zeusmp
-$ZSIMAPPSPATH/build/speccpu2006/cactusADM/cactusADM $ZSIMAPPSPATH/build/speccpu2006/cactusADM/benchADM.par
-$ZSIMAPPSPATH/build/speccpu2006/soplex/soplex -m3500 $ZSIMAPPSPATH/build/speccpu2006/soplex/ref.mps
-$ZSIMAPPSPATH/build/speccpu2006/calculix/calculix -i $ZSIMAPPSPATH/build/speccpu2006/calculix/hyperviscoplastic
-$ZSIMAPPSPATH/build/speccpu2006/GemsFDTD/GemsFDTD
-$ZSIMAPPSPATH/build/speccpu2006/libquantum/libquantum 1397 8
-$ZSIMAPPSPATH/build/speccpu2006/h264ref/h264ref -d $ZSIMAPPSPATH/build/speccpu2006/h264ref/foreman_ref_encoder_main.cfg
-$ZSIMAPPSPATH/build/speccpu2006/lbm/lbm 3000 $ZSIMAPPSPATH/build/speccpu2006/lbm/reference.dat 0 0 $ZSIMAPPSPATH/build/speccpu2006/lbm/100_100_130_ldc.of
-$ZSIMAPPSPATH/build/speccpu2006/omnetpp/omnetpp $ZSIMAPPSPATH/build/speccpu2006/omnetpp/omnetpp.ini
-$ZSIMAPPSPATH/build/speccpu2006/xalancbmk/xalancbmk -v $ZSIMAPPSPATH/build/speccpu2006/xalancbmk/t5.xml $ZSIMAPPSPATH/build/speccpu2006/xalancbmk/xalanc.xsl
+./perlbench -I/lib ./diffmail.pl 4 800 10 17 19 300
+./bzip2 ./input.combined 200
+./gcc ./scilab.i -o ./scilab.s
+./mcf ./inp.in
+./zeusmp
+./cactusADM ./benchADM.par
+./soplex -m3500 ./ref.mps
+./calculix -i ./hyperviscoplastic
+./GemsFDTD
+./libquantum 1397 8
+./h264ref ./foreman_ref_encoder_main.cfg
+./lbm 3000 ./reference.dat 0 0 ./100_100_130_ldc.of
+./omnetpp ./omnetpp.ini
+./xalancbmk -v ./t5.xml ./xalanc.xsl
 perlbench | bzip2 | GemsFDTD | lbm
 gcc | libquantum | soplex | zeusmp
 cactusADM | calculix | h264ref | Xalan
