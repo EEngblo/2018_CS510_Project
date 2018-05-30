@@ -356,7 +356,7 @@ class WPDIP : public PartReplPolicy, public LegacyReplPolicy {
                 partInfo[newPart].profMisses.inc();
                 e->p = newPart;
             }
-            if(incomingLinePartIsBIP && std::rand() % 32 == 0){
+            if(e->ts == 0 && incomingLinePartIsBIP && std::rand() % 32 == 0){
                 e->ts = e->old_ts;
                 timestamp++;
             }else{
